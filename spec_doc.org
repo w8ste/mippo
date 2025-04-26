@@ -1,0 +1,130 @@
+#+TITLE: Mippo Language Reference
+#+AUTHOR: w8ste
+#+OPTIONS: toc:nil
+
+* Introduction
+Mippo is a small, functional programming language with prefix notation and implicit autocurrying.
+It is designed to be minimal, expressive, and poetic — like a thoughtful hippo and a clod pondering by a river.
+
+* Core Concepts
+- Everything is an expression and evaluates to a value.
+- Prefix notation: the operator or function comes first.
+- Functions are first-class and immutable.
+- Autocurrying: partially applied functions return new functions.
+- Only pure functions and immutable data exist.
+
+* Syntax
+** Literals
+- Numbers: =42=, =3.14=
+- Lists: =[1 2 3]=
+- Functions: defined with =def= or =fn=.
+
+** Function Definition
+#+BEGIN_SRC mippo
+(def function-name (arg1 arg2 ...)
+  body)
+
+(def add (a , b)
+  + a b )
+#+END_SRC
+
+** Anonymous Functions
+#+BEGIN_SRC mippo
+(fn (arg1 arg2 ...)
+  body)
+#+END_SRC
+
+** Function Call
+#+BEGIN_SRC mippo
+(function-name arg1 arg2 ...)
+#+END_SRC
+
+** Conditionals
+#+BEGIN_SRC mippo
+(if condition then-expr else-expr)
+#+END_SRC
+
+** List Literals
+#+BEGIN_SRC mippo
+[1 2 3 4 5]
+#+END_SRC
+
+** Comments
+Mippo relies on C style comments
+#+begin_src mippo
+# this is a comment
+#+end_src
+
+* Special Features
+** Prefix Notation
+All function calls and operators are written in prefix form:
+#+BEGIN_SRC mippo
+(+ 1 2)
+(* 3 4)
+(factorial 5)
+#+END_SRC
+
+** Autocurrying
+Functions automatically curry when given fewer arguments than defined.
+Calling a function with fewer arguments returns a new function waiting for the rest.
+
+#+BEGIN_SRC mippo
+(def add (x y) (+ x y))
+(def add3 (add 3)) ;; returns a function (fn (y) (+ 3 y))
+(add3 7) ;; evaluates to 10
+#+END_SRC
+
+This makes partial application simple and natural.
+
+* Built-in Functions
+| Name   | Description                      |
+|--------+----------------------------------|
+| +      | Add two numbers                  |
+| -      | Subtract                        |
+| *      | Multiply                        |
+| /      | Divide                          |
+| ==     | Equality comparison              |
+| <=     | Less than or equal comparison    |
+| >=     | Greater than or equal comparison |
+| cons   | Prepend an element to a list     |
+| head   | First element of a list          |
+| tail   | All elements after the head      |
+| len    | Length of a list                 |
+| map    | Apply a function to each list element |
+| fold   | Reduce a list to a single value   |
+
+* Example Programs
+
+** Factorial
+#+BEGIN_SRC mippo
+(def factorial (n)
+  (if (<= n 1)
+      1
+      (* n (factorial (- n 1)))))
+
+(factorial 5) ;; => 120
+#+END_SRC
+
+** Sum a List
+#+BEGIN_SRC mippo
+(def sum (lst)
+  (fold + 0 lst))
+
+(sum [1 2 3 4 5]) ;; => 15
+#+END_SRC
+
+** Mapping Over a List
+#+BEGIN_SRC mippo
+(map (fn (x) (* x 2)) [1 2 3 4])
+;; => [2 4 6 8]
+#+END_SRC
+
+** Partial Application Example
+#+BEGIN_SRC mippo
+(def mult (x y) (* x y))
+(def double (mult 2))
+
+(double 5) ;; => 10
+(double 8) ;; => 16
+#+END_SRC
+
