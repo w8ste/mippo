@@ -131,8 +131,8 @@ This makes partial application simple and natural.
 * Lexer
 ** Token Types for Mippo
 
-| Token Kind      | Example         | Description                                |
-|------------------+--------------- +------------------------------------------- |
+| Token Kind      | Example         | Description                               |
+|-----------------+-----------------+-------------------------------------------|
 | LEFT_PAREN       | (              | Begin a function call                     |
 | RIGHT_PAREN      | )              | End a function call                       |
 | LEFT_BRACKET     | [              | Begin a list literal                      |
