@@ -128,3 +128,26 @@ This makes partial application simple and natural.
 (double 8) ;; => 16
 #+END_SRC
 
+* Lexer
+** Token Types for Mippo
+
+| Token Kind      | Example         | Description                                |
+|------------------+--------------- +------------------------------------------- |
+| LEFT_PAREN       | (              | Begin a function call                     |
+| RIGHT_PAREN      | )              | End a function call                       |
+| LEFT_BRACKET     | [              | Begin a list literal                      |
+| RIGHT_BRACKET    | ]              | End a list literal                        |
+| KEYWORD_DEF      | def            | Define a new function                     |
+| KEYWORD_FN       | fn             | Define an anonymous function              |
+| KEYWORD_IF       | if             | Conditional branching                     |
+| OPERATOR         | +, -, *, /, == | Arithmetic or comparison operator         |
+| NUMBER           | 42, 3.14       | Numeric literal (integer or float)        |
+| BOOLEAN          | true, false    | Boolean literal                           |
+| IDENTIFIER       | add, x, factorial | Function or variable name              |
+| EOF              |                | End of input marker                       |
+
+** Notes
+- Lists are recognized by LEFT_BRACKET and RIGHT_BRACKET, the parser will build the list AST node.
+- Operators like =+= or == are treated as separate OPERATOR tokens.
+- Whitespace is skipped during lexing.
+- Comments are optional; if added later, could be ignored after a semicolon or special symbol.
