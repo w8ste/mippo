@@ -4,7 +4,7 @@ include("lexer_error.jl")
 @enum TokenKind begin
 	LEFT_PAREN
     RIGHT_PAREN
-    LEFT_Bracket
+    LEFT_BRACKET
     RIGHT_BRACKET
     KEYWORD_DEF
     KEYWORD_FN
@@ -139,7 +139,7 @@ function extract_token(lexer::Lexer)
         lexer.pos += 1
         lexer.column += 1
     elseif c == '['
-        lexer.token_buffer = Token(LEFT_Bracket, "[", make_location(lexer.file_path, lexer.row, lexer.column))
+        lexer.token_buffer = Token(LEFT_BRACKET, "[", make_location(lexer.file_path, lexer.row, lexer.column))
         lexer.pos += 1
         lexer.column += 1
     elseif c == ']'
