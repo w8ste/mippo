@@ -2,3 +2,5 @@
   (if name
       [name]
       []))
+
+(greet "mippo")

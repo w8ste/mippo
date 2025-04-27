@@ -12,6 +12,7 @@ include("lexer_error.jl")
     KEYWORD_BOOL
     OPERATOR
     TOKEN_NUMBER
+    TOKEN_STRING
     IDENTIFIER
     EOF
     EmptyToken
@@ -59,6 +60,29 @@ function skip_whitespace(lexer::Lexer)
             lexer.column += 1
         end
     end
+end
+
+
+function tokenize_until_char(lexer::Lexer, c::Char, loc::Location)
+
+    lexer.column += 1
+    lexer.pos += 1
+    while lexer.pos <= length(lexer.content) && lexer.content[lexer.pos] != c
+        lexer.column += 1
+        lexer.pos += 1        
+    end
+    loc.column = lexer.column
+    e = lexer.pos
+
+    
+    if lexer.pos > length(lexer.content)
+        throw(LexerErr("Undetermined Non-Terminal. Expected $(c)", loc))
+    elseif lexer.content[lexer.pos] == c
+        lexer.column += 1
+        lexer.pos += 1
+    end
+
+    return e
 end
 
 function extract_identifier_or_keyword(lexer::Lexer)
@@ -112,7 +136,7 @@ function extract_number(lexer::Lexer)
     loc::Location = make_location(lexer.file_path, lexer.row, lexer.column)
 
     if buffer == ""
-        throw(LexerErr("Something went wrong whils trying to parse a number!", make_location(lexer.file_path, lexer.row, lexer.column)))
+        throw(LexerErr("Something went wrong whils trying to parse a number!", loc))
     end
 
     
@@ -124,34 +148,40 @@ end
 function extract_token(lexer::Lexer)
     skip_whitespace(lexer)
     
+    loc::Location = make_location(lexer.file_path, lexer.row, lexer.column)
     if lexer.pos > length(lexer.content)
-        return Token(EOF, nothing, make_location(lexer.file_path, lexer.row, lexer.pos))
+        return Token(EOF, nothing, loc)
     end
 
     c = lexer.content[lexer.pos]
-   
+    loc = make_location(lexer.file_path, lexer.row, lexer.column)
+
     if c == '('
-        lexer.token_buffer = Token(LEFT_PAREN, "(", make_location(lexer.file_path, lexer.row, lexer.column))
+        lexer.token_buffer = Token(LEFT_PAREN, "(", loc)
         lexer.pos += 1
         lexer.column += 1
     elseif c == ')'
-        lexer.token_buffer = Token(RIGHT_PAREN, ")", make_location(lexer.file_path, lexer.row, lexer.column))
+        lexer.token_buffer = Token(RIGHT_PAREN, ")", loc)
         lexer.pos += 1
         lexer.column += 1
     elseif c == '['
-        lexer.token_buffer = Token(LEFT_BRACKET, "[", make_location(lexer.file_path, lexer.row, lexer.column))
+        lexer.token_buffer = Token(LEFT_BRACKET, "[", loc)
         lexer.pos += 1
         lexer.column += 1
     elseif c == ']'
+        lexer.token_buffer = Token(RIGHT_BRACKET, "]", loc)
         lexer.pos += 1
         lexer.column += 1
-        lexer.token_buffer = Token(RIGHT_BRACKET, "]", make_location(lexer.file_path, lexer.row, lexer.column))
     elseif is_letter(c)
         lexer.token_buffer = extract_identifier_or_keyword(lexer)
     elseif is_digit(c)
         lexer.token_buffer = extract_number(lexer)
+    elseif c == '"'
+        start = lexer.pos
+        e = tokenize_until_char(lexer, '"', loc)
+        lexer.token_buffer = Token(TOKEN_STRING, lexer.content[start:e], loc)
     else
-        throw(LexerErr("Expected a token, but got $(lexer.content[lexer.pos])", make_location(lexer.file_path, lexer.row, lexer.column)))
+        throw(LexerErr("Expected a token, but got $(lexer.content[lexer.pos])", loc))
     end
 
     return lexer.token_buffer

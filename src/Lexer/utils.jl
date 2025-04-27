@@ -1,4 +1,4 @@
-struct Location
+mutable struct Location
     path::String
     row::Int
     column::Int
