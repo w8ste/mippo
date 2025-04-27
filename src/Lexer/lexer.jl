@@ -87,11 +87,12 @@ function extract_identifier_or_keyword(lexer::Lexer)
 end
 
 function tokenize_digits(lexer::Lexer, buffer::String)
-    while lexer.pos < length(lexer.content) && is_digit(lexer.content[lexer.pos])
+    while lexer.pos <= length(lexer.content) && is_digit(lexer.content[lexer.pos])
         buffer *= lexer.content[lexer.pos]
         lexer.pos += 1
         lexer.column += 1
     end
+
     return buffer
 end
 
@@ -105,7 +106,7 @@ function extract_number(lexer::Lexer)
         lexer.pos += 1
         lexer.column += 1
 
-        buffer *= tokenize_digits(lexer, buffer)
+        buffer = tokenize_digits(lexer, buffer)
     end
 
     loc::Location = make_location(lexer.file_path, lexer.row, lexer.column)
@@ -113,6 +114,7 @@ function extract_number(lexer::Lexer)
     if buffer == ""
         throw(LexerErr("Something went wrong whils trying to parse a number!", make_location(lexer.file_path, lexer.row, lexer.column)))
     end
+
     
     value = parse(Float64, buffer)
     
