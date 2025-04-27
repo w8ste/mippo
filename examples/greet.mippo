@@ -1,0 +1,4 @@
+(def greet (name)
+  (if name
+      [name]
+      []))

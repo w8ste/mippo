@@ -102,7 +102,7 @@ This makes partial application simple and natural.
       1
       (* n (factorial (- n 1)))))
 
-(factorial 5) ;; => 120
+(factorial 5) # => 120
 #+END_SRC
 
 ** Sum a List
@@ -140,9 +140,9 @@ This makes partial application simple and natural.
 | KEYWORD_DEF      | def            | Define a new function                     |
 | KEYWORD_FN       | fn             | Define an anonymous function              |
 | KEYWORD_IF       | if             | Conditional branching                     |
+| KEYWORD_BOOL     | true, false    | Boolean literal                           |
 | OPERATOR         | +, -, *, /, == | Arithmetic or comparison operator         |
 | NUMBER           | 42, 3.14       | Numeric literal (integer or float)        |
-| BOOLEAN          | true, false    | Boolean literal                           |
 | IDENTIFIER       | add, x, factorial | Function or variable name              |
 | EOF              |                | End of input marker                       |
 
