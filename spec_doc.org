@@ -50,7 +50,7 @@ It is designed to be minimal, expressive, and poetic — like a thoughtful hippo
 #+END_SRC
 
 ** Comments
-Mippo relies on C style comments
+Mippo relies on single line comments
 #+begin_src mippo
 # this is a comment
 #+end_src
