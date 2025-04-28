@@ -70,7 +70,7 @@ function skip_whitespace(lexer::Lexer)
 end
 
 
-function tokenize_until_char(lexer::Lexer, c::Char, loc::Location)
+function tokenize_until_char(lexer::Lexer, c::Char, loc::Location)::Int64
 
     lexer.column += 1
     lexer.pos += 1
@@ -79,7 +79,7 @@ function tokenize_until_char(lexer::Lexer, c::Char, loc::Location)
         lexer.pos += 1        
     end
     loc.column = lexer.column
-    e = lexer.pos
+    e::Int64 = lexer.pos
 
     
     if lexer.pos > length(lexer.content)
@@ -92,7 +92,7 @@ function tokenize_until_char(lexer::Lexer, c::Char, loc::Location)
     return e
 end
 
-function extract_identifier_or_keyword(lexer::Lexer)
+function extract_identifier_or_keyword(lexer::Lexer)::Token
     buffer = ""
     start = lexer.column
 
@@ -117,7 +117,7 @@ function extract_identifier_or_keyword(lexer::Lexer)
     end
 end
 
-function tokenize_digits(lexer::Lexer, buffer::String)
+function tokenize_digits(lexer::Lexer, buffer::String)::String
     while lexer.pos <= length(lexer.content) && is_digit(lexer.content[lexer.pos])
         buffer *= lexer.content[lexer.pos]
         lexer.pos += 1
@@ -127,7 +127,7 @@ function tokenize_digits(lexer::Lexer, buffer::String)
     return buffer
 end
 
-function extract_number(lexer::Lexer)
+function extract_number(lexer::Lexer)::Token
     buffer = ""
 
     buffer *= tokenize_digits(lexer, buffer)
@@ -152,7 +152,7 @@ function extract_number(lexer::Lexer)
     return Token(TOKEN_NUMBER, value, loc)
 end
 
-function extract_token(lexer::Lexer)
+function extract_token(lexer::Lexer)::Token
     skip_whitespace(lexer)
     
     loc::Location = make_location(lexer.file_path, lexer.row, lexer.column)
@@ -238,7 +238,7 @@ function extract_token(lexer::Lexer)
           
 end
 
-function next(lexer::Lexer)
+function next(lexer::Lexer)::Token
 	if lexer.token_buffer_full
         lexer.token_buffer_full = false
         return lexer.token_buffer

@@ -1,6 +1,7 @@
 module mippo
 
 include("Lexer/lexer.jl")
+include("Parser/parser.jl")
 
 for x in ARGS
     if isfile(x)

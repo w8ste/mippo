@@ -24,7 +24,7 @@ It is designed to be minimal, expressive, and poetic — like a thoughtful hippo
 (def function-name (arg1 arg2 ...)
   body)
 
-(def add (a , b)
+(def add (a b)
   + a b )
 #+END_SRC
 
@@ -37,11 +37,17 @@ It is designed to be minimal, expressive, and poetic — like a thoughtful hippo
 ** Function Call
 #+BEGIN_SRC mippo
 (function-name arg1 arg2 ...)
+
+# e.g.
+(add 1 2)
 #+END_SRC
 
 ** Conditionals
 #+BEGIN_SRC mippo
-(if condition then-expr else-expr)
+(if (condition) [then-expr (else-expr)])
+
+# e.g. 
+(if (== n 0) 1 (factorial (- n 1)))
 #+END_SRC
 
 ** List Literals
@@ -54,6 +60,48 @@ Mippo relies on C style comments
 #+begin_src mippo
 # this is a comment
 #+end_src
+
+** Grammer
+<> -> Non-Terminal
+{} -> Sequence
+#+begin_src 
+<program> := {<expression>}
+
+<expression>           := <simple-expression>
+                        | <definition>
+
+<simple-expression>    := <literal>
+                        | <function>
+                        | <if-expression>
+                        | <call>
+                        | <list>
+
+ <literal>             := <number>
+                        | <boolean>
+                        | <string>
+
+<definition>           := "(" "def" <identifier> "(" {<identifier>} ")" {<expression>} ")"
+
+<function>             := "(" "fn" "(" {<identifier>} ")" {<expression>} ")"
+
+<if-expression>        := "(" "if" <condition> {<expressions>} ["else" {<expression>}] ")"
+
+<call>                 := "(" <identifier> {identifier} ")"
+
+<list>                 := "[" {<expresssion>} "]"
+
+<number>               := ["-"] <digit> {<digit>} ["." <digit> {<digit>}]
+
+<boolean>              := "true"
+                        | "false"
+
+<string>               := "\"" {<letter>} "\""
+
+<identifier>           := <letter> {<letter>}
+
+<letter>               := "a" | ... | "z" | "A" | ... | "Z" | "_"
+
+#+END_SRC
 
 * Special Features
 ** Prefix Notation

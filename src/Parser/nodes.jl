@@ -2,6 +2,10 @@ include("../Lexer/lexer.jl")
 
 abstract type ExprNode end
 
+struct EOFNode <: ExprNode
+    location::Location
+end
+
 struct LiteralNode <: ExprNode
     value::Union{Int, Float64, String}
     location::Location
@@ -25,15 +29,20 @@ struct DefNode <: ExprNode
     loation::Location
 end
 
-struct FnNode
+struct FnNode <: ExprNode
     args::Vector{ExprNode}
     body::ExprNode
     location::Location
 end
 
-struct IfNode
+struct IfNode <: ExprNode
     condition::ExprNode
     if_body::ExprNode
     else_body::ExprNode
+    location::Location
+end
+
+struct ListNode <: ExprNode
+    nodes::Vector{ExprNode}
     location::Location
 end
