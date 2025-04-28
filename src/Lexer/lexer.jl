@@ -165,57 +165,46 @@ function extract_token(lexer::Lexer)::Token
 
     if c == '('
         lexer.token_buffer = Token(LEFT_PAREN, "(", loc)
-        lexer.pos += 1
-        lexer.column += 1
+        advance(lexer)
     elseif c == ')'
         lexer.token_buffer = Token(RIGHT_PAREN, ")", loc)
-        lexer.pos += 1
-        lexer.column += 1
+        advance(lexer)        
     elseif c == '['
         lexer.token_buffer = Token(LEFT_BRACKET, "[", loc)
-        lexer.pos += 1
-        lexer.column += 1
+        advance(lexer)
     elseif c == ']'
         lexer.token_buffer = Token(RIGHT_BRACKET, "]", loc)
-        lexer.pos += 1
-        lexer.column += 1
+        advance(lexer)
     elseif c == '+'
         lexer.token_buffer = Token(TOKEN_PLUS, "+", loc)
-        lexer.column += 1
-        lexer.pos += 1
+        advance(lexer)
     elseif c == '-'
         lexer.token_buffer = Token(TOKEN_MINUS, "-", loc)
-        lexer.column += 1
-        lexer.pos += 1               
+        advance(lexer)
     elseif c == '*'
         lexer.token_buffer = Token(TOKEN_MULTIPY, "*", loc)
-        lexer.column += 1
-        lexer.pos += 1        
+        advance(lexer)
     elseif c ==  '/'
         lexer.token_buffer = Token(TOKEN_DIVIDE, "/", loc)
-        lexer.column += 1
-        lexer.pos += 1
+        advance(lexer)
     elseif c == '='
         if lexer.pos + 1 > length(lexer.content) || lexer.content[lexer.pos + 1] != '='
             throw(LexerErr("Unexprected Token, Expected \"=\"", loc))
         end
         lexer.token_buffer = Token(TOKEN_EQ, "==", loc)
-        lexer.column += 2
-        lexer.pos += 2
+        advance(lexer, 2)
     elseif c == '<'
         if lexer.pos + 1 > length(lexer.content) || lexer.content[lexer.pos + 1] != '='
             throw(LexerErr("Unexprected Token, Expected \"=\"", loc))
         end
         lexer.token_buffer = Token(TOKEN_LET, "<=", loc)
-        lexer.column += 2
-        lexer.pos += 2
+        advance(lexer, 2)
     elseif c == '>'
         if lexer.pos + 1 > length(lexer.content) || lexer.content[lexer.pos + 1] != '='
             throw(LexerErr("Unexprected Token, Expected \"=\"", loc))
         end
         lexer.token_buffer = Token(TOKEN_GET, ">=", loc)
-        lexer.column += 2
-        lexer.pos += 2
+        advance(lexer, 2)
     elseif is_letter(c)
         lexer.token_buffer = extract_identifier_or_keyword(lexer)
     elseif is_digit(c)
@@ -226,8 +215,7 @@ function extract_token(lexer::Lexer)::Token
         lexer.token_buffer = Token(TOKEN_STRING, lexer.content[start:e], loc)
     elseif c == '#'
         while lexer.pos <= length(lexer.content) && lexer.content[lexer.pos] != '\n'
-            lexer.column += 1
-            lexer.pos += 1
+            advance(lexer)
         end
         return extract_token(lexer)
     else
@@ -260,4 +248,16 @@ end
 
 function init_lexer(content::String, file_path::String, pos::Int, row::Int, column::Int,)
     Lexer(content, file_path, pos, row, column, false, Token(EmptyToken, "", make_location(file_path, row, pos)))
+end
+
+function advance(lexer::Lexer)
+    lexer.column += 1
+    lexer.pos += 1
+end
+
+function advance(lexer::Lexer, n::Int)
+    for _ in 1:n
+        lexer.column += 1
+        lexer.pos += 1
+    end
 end
