@@ -256,8 +256,6 @@ function advance(lexer::Lexer)
 end
 
 function advance(lexer::Lexer, n::Int)
-    for _ in 1:n
-        lexer.column += 1
-        lexer.pos += 1
-    end
+    lexer.column += n
+    lexer.pos += n
 end
