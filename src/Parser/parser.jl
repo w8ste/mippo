@@ -40,11 +40,7 @@ end
 function parse_list(lexer::Lexer)::ListNode
 
     nodes = ExprNode[]
-
-
     start::Location = peek(lexer).location
-
-
     
     while true
         next(lexer)
@@ -54,17 +50,7 @@ function parse_list(lexer::Lexer)::ListNode
             break
         end
 
-        
-
         push!(nodes, parse_expression(lexer))
-
-        if EOF in nodes
-            break
-
-       
-    end
-        
-
     end
 
 
