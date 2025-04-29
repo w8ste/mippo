@@ -6,13 +6,15 @@ function parseExpr(lexer::Lexer)::ExprNode
     
 end
 
-function start_parse(lexer::Lexer)::ExprNode
+function start_parse(lexer::Lexer)::Vector{ExprNode}
 
     nodes = ExprNode[]
     
     while peek(lexer).token_kind != EOF
         push!(nodes, parse_expression(lexer))
     end
+
+    return nodes
 end
 
 function parse_expression(lexer::Lexer)::ExprNode
@@ -34,6 +36,7 @@ function parse_expression(lexer::Lexer)::ExprNode
 end
 
 function parse_in_parens(lexer::Lexer)::ExprNode
+    
 
 end
 
@@ -52,6 +55,8 @@ function parse_list(lexer::Lexer)::ListNode
 
         push!(nodes, parse_expression(lexer))
     end
+
+    next(lexer)
 
     return ListNode(nodes, start)
 end

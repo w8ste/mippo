@@ -46,3 +46,9 @@ struct ListNode <: ExprNode
     nodes::Vector{ExprNode}
     location::Location
 end
+
+Base.:(==)(a::ListNode, b::ListNode) = begin
+    a.location == b.location && a.nodes == b.nodes
+end
+
+Base.:(==)(a::LiteralNode, b::LiteralNode) = a.location == b.location && a.value == b.value

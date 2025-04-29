@@ -1,6 +1,7 @@
 using Test
 
 include("../src/Lexer/lexer.jl")
+include( "../src/Parser/parser.jl")
 
 function test_lexer(input::String, expected_token_kinds::Vector{TokenKind})
     lexer = init_lexer(input, "<test>", 1, 1, 1)
@@ -12,6 +13,18 @@ function test_lexer(input::String, expected_token_kinds::Vector{TokenKind})
 
     token = next(lexer)
     @test token.token_kind == EOF
+end
+
+function test_parser(input::String, expected_nodes::Vector{ExprNode})
+    lexer = init_lexer(input, "<test>", 1, 1, 1)
+
+    nodes = start_parse(lexer)
+
+    @test length(nodes) == length(expected_nodes)
+
+    for i in eachindex(nodes)
+        @test nodes[i] == expected_nodes[i]
+    end
 end
 
 @testset "Lexer Tests" begin
@@ -35,5 +48,21 @@ end
     @testset "List literal" begin
         test_lexer("[1 2 3]", [LEFT_BRACKET, TOKEN_NUMBER, TOKEN_NUMBER, TOKEN_NUMBER, RIGHT_BRACKET])
     end
-
 end
+
+@testset "Parser Tests" begin
+
+    @testset "Empty list" begin
+        node::Vector{ExprNode} = [ListNode([], Location("<test>",1,1))]
+	    test_parser("[]", node)
+    end
+
+    @testset "List" begin
+        loc = Location("<test>", 1, 3)
+        loc2 = Location("<test>", 1, 5)
+	    nodes::Vector{ExprNode} = [ListNode([LiteralNode(1.0, loc), LiteralNode(2.0, loc2)], Location("<test>", 1, 1))]
+
+        test_parser("[1 2]", nodes)
+    end
+end
+
