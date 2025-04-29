@@ -53,7 +53,6 @@ function parse_list(lexer::Lexer)::ListNode
         push!(nodes, parse_expression(lexer))
     end
 
-
     return ListNode(nodes, start)
 end
 
