@@ -1,11 +1,6 @@
 include("nodes.jl")
 include("parser_error.jl")
 
-
-function parseExpr(lexer::Lexer)::ExprNode
-    
-end
-
 function start_parse(lexer::Lexer)::Vector{ExprNode}
 
     nodes = ExprNode[]
@@ -31,12 +26,74 @@ function parse_expression(lexer::Lexer)::ExprNode
     else
         throw(LexerErr("Unexpected Token, got $(tok)", tok.location))
     end
-
-
 end
 
 function parse_in_parens(lexer::Lexer)::ExprNode
+
+    start::Location = peek(lexer).location
+    expect(lexer, LEFT_PAREN)
     
+    tok::Token = peek(lexer)
+
+    if tok.token_kind == KEYWORD_DEF
+        return parse_function_definition(lexer, start)
+    elseif tok.token_kind == KEYWORD_FN
+        return parse_anonymous_function(lexer, start)
+    end
+    
+end
+
+function parse_function_definition(lexer::Lexer, start::Location)::ExprNode
+    expect(lexer, KEYWORD_DEF)
+
+    token_name = expect(lexer, IDENTIFIER)
+    args::Vector{Token} = parse_args(lexer)
+    body::Vector{ExprNode} = parse_function_body(lexer)
+
+    return DefNode(token_name.content, args, body, start)
+end
+
+function parse_anonymous_function(lexer::Lexer, start::Location)::ExprNode
+    expect(lexer, KEYWORD_FN)
+
+    args::Vector{Token} = parse_args(lexer)
+    body::Vector{ExprNode} = parse_function_body(lexer)
+
+    return FnNode(args, body, start)
+end
+
+function parse_args(lexer::Lexer)::Vector{Token}
+    expect(lexer, LEFT_PAREN)
+
+
+    args::Vector{Token} = Token[]
+
+    while peek(lexer).token_kind != RIGHT_PAREN
+        println(peek(lexer))
+
+        if peek(lexer) == EOF
+            throw(ParseError("Unexpected EOF", peek(lexer).location))
+        end
+
+        push!(args, expect(lexer, IDENTIFIER))
+    end
+
+    expect(lexer, RIGHT_PAREN)
+
+    return args
+end
+
+function parse_function_body(lexer::Lexer)::Vector{ExprNode}
+    body::Vector{ExprNode} = ExprNode[]
+    
+    while(peek(lexer).token_kind != RIGHT_BRACKET)
+        if peek(lexer).token_kind == EOF
+           throw(ParseError("Expected ')', but got EOF", peek(lexer).location)) 
+        end
+        push!(body, parse_expression(lexer))
+    end
+
+    return body
 
 end
 
@@ -44,19 +101,18 @@ function parse_list(lexer::Lexer)::ListNode
 
     nodes = ExprNode[]
     start::Location = peek(lexer).location
+    expect(lexer, LEFT_BRACKET)
     
-    while true
-        next(lexer)
+    while peek(lexer).token_kind != RIGHT_BRACKET
         if peek(lexer) == EOF
             throw(ParseError("Expected closing ], got EOL", start))
-        elseif peek(lexer).token_kind == RIGHT_BRACKET
-            break
         end
 
         push!(nodes, parse_expression(lexer))
+        next(lexer)
     end
 
-    next(lexer)
+    expect(lexer, RIGHT_BRACKET)
 
     return ListNode(nodes, start)
 end

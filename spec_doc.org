@@ -67,10 +67,8 @@ Mippo relies on single line comments
 #+begin_src 
 <program> := {<expression>}
 
-<expression>           := <simple-expression>
-                        | <definition>
-
-<simple-expression>    := <literal>
+<expression>           := <definition>
+                        | <literal>
                         | <function>
                         | <if-expression>
                         | <call>

@@ -24,8 +24,8 @@ end
 
 struct DefNode <: ExprNode
     name::String
-    args::Vector{ExprNode}
-    body::ExprNode
+    args::Vector{IDENTIFIER}
+    body::Vector{ExprNode}
     loation::Location
 end
 
