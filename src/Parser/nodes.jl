@@ -6,6 +6,7 @@ struct EOFNode <: ExprNode
     location::Location
 end
 
+
 struct LiteralNode <: ExprNode
     value::Union{Int, Float64, String}
     location::Location
@@ -16,7 +17,7 @@ struct VarNode <: ExprNode
     location::Location
 end
 
-struct CallNodes <: ExprNode
+struct CallNode <: ExprNode
     func::ExprNode
     args::Vector{ExprNode}
     location::Location
@@ -30,7 +31,7 @@ struct DefNode <: ExprNode
 end
 
 struct FnNode <: ExprNode
-    args::Vector{ExprNode}
+    args::Vector{Token}
     body::ExprNode
     location::Location
 end
