@@ -31,7 +31,8 @@ function parse_expression(lexer::Lexer)::ExprNode
         return EOFNode(tok.location)
     elseif tok.token_kind == LEFT_BRACKET
         return parse_list(lexer)
-    elseif tok.token_kind == TOKEN_NUMBER || tok.token_kind == KEYWORD_BOOL || tok.token_kind == TOKEN_STRING # parse literal
+    elseif tok.token_kind == TOKEN_NUMBER || tok.token_kind == KEYWORD_BOOL || tok.token_kind == TOKEN_STRING || tok.token_kind == IDENTIFIER # parse literal
+        next(lexer)
         return LiteralNode(tok.content, tok.location)
     elseif tok.token_kind == LEFT_PAREN # parse def, fn, call, if
         return parse_in_parens(lexer)
@@ -54,12 +55,16 @@ function parse_in_parens(lexer::Lexer)::ExprNode
     
     tok::Token = peek(lexer)
 
-    if tok.token_kind == KEYWORD_DEF
+ if tok.token_kind == KEYWORD_DEF
         return parse_function_definition(lexer, start)
     elseif tok.token_kind == KEYWORD_FN
         return parse_anonymous_function(lexer, start)
     elseif tok.token_kind == IDENTIFIER
         return parse_call(lexer, start)
+    elseif tok.token_kind == LEFT_PAREN
+        return parse_in_parens(lexer)
+    elseif tok.token_kind == KEYWORD_IF
+        return parse_if_expression(lexer, start)
     end
     
 end
@@ -127,4 +132,29 @@ function parse_list(lexer::Lexer)::ListNode
     expect(lexer, RIGHT_BRACKET)
 
     return ListNode(nodes, start)
+end
+
+"""
+    parse_if_expression(lexer) -> IfNode
+
+    This function will parse an If expression
+"""
+function parse_if_expression(lexer::Lexer, start::Location)::IfNode
+    expect(lexer, KEYWORD_IF)
+
+    cond = parse_expression(lexer)
+    then_branch = parse_expression(lexer)
+    println("hello")
+
+    else_branch = EmptyNode(start)
+
+    if peek(lexer).token_kind == EOF
+        throw(ParseError("Expected token RIGHT_PAREN, but got EOF", peek(lexer).location))
+    elseif peek(lexer).token_kind != RIGHT_PAREN
+        else_branch = parse_expression(lexer)
+    end
+
+    expect(lexer, RIGHT_PAREN)
+
+    return IfNode(cond, then_branch, else_branch, start)
 end

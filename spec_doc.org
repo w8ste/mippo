@@ -82,7 +82,7 @@ Mippo relies on single line comments
 
 <function>             := "(" "fn" "(" {<identifier>} ")" {<expression>} ")"
 
-<if-expression>        := "(" "if" <condition> {<expressions>} ["else" {<expression>}] ")"
+<if-expression>        := "(" "if" <condition> {<expressions>} [{<expression>}] ")"
 
 <call>                 := "(" <identifier> {identifier} ")"
 

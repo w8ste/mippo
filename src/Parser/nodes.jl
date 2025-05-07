@@ -6,6 +6,9 @@ struct EOFNode <: ExprNode
     location::Location
 end
 
+struct EmptyNode <: ExprNode
+    location::Location
+end
 
 struct LiteralNode <: ExprNode
     value::Union{Int, Float64, String}
