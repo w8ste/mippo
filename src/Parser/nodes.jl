@@ -15,6 +15,11 @@ struct LiteralNode <: ExprNode
     location::Location
 end
 
+struct IdentifierNode <: ExprNode
+    value::Union{Int, Float64, String}
+    location::Location
+end
+
 struct VarNode <: ExprNode
     value::String
     location::Location

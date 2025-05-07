@@ -31,8 +31,10 @@ function parse_expression(lexer::Lexer)::ExprNode
         return EOFNode(tok.location)
     elseif tok.token_kind == LEFT_BRACKET
         return parse_list(lexer)
-    elseif tok.token_kind == TOKEN_NUMBER || tok.token_kind == KEYWORD_BOOL || tok.token_kind == TOKEN_STRING || tok.token_kind == IDENTIFIER # parse literal
+    elseif tok.token_kind == IDENTIFIER
         next(lexer)
+        return IdentifierNode(tok.content, tok.location)
+    elseif tok.token_kind == TOKEN_NUMBER || tok.token_kind == KEYWORD_BOOL || tok.token_kind == TOKEN_STRING # parse literal
         return LiteralNode(tok.content, tok.location)
     elseif tok.token_kind == LEFT_PAREN # parse def, fn, call, if
         return parse_in_parens(lexer)
