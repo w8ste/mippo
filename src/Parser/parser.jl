@@ -116,6 +116,12 @@ function parse_anonymous_function(lexer::Lexer, start::Location)::FnNode
     return FnNode(args, body, start)
 end
 
+"""
+    parse_list(lexer) -> ListNode
+
+    This function will parse a list, consuming both brackets in the process.
+    In case of not parsing a RIGHT_BRACKET it will parse the whole file and eventually throw an EOF error.
+"""
 function parse_list(lexer::Lexer)::ListNode
 
     nodes = ExprNode[]
@@ -124,7 +130,7 @@ function parse_list(lexer::Lexer)::ListNode
     
     while peek(lexer).token_kind != RIGHT_BRACKET
         if peek(lexer) == EOF
-            throw(ParseError("Expected closing ], got EOL", start))
+            throw(ParseError("Expected closing ], got EOF", start))
         end
 
         push!(nodes, parse_expression(lexer))

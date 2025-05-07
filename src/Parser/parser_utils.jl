@@ -40,10 +40,15 @@ function parse_function_body(lexer::Lexer)::Vector{ExprNode}
     end
 
     return body
-
 end
 
+"""
+    expect(lexer) -> Token
 
+    This function will inspect the next token that the lexer returns.
+    If said token has the same kind as the expected token kind, then it will return this token, if not,
+    this function will throw a PareError
+"""
 function expect(lexer::Lexer, expected::TokenKind)::Token
     v = next(lexer)
 
