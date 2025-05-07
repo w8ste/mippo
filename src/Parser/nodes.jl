@@ -61,3 +61,11 @@ Base.:(==)(a::ListNode, b::ListNode) = begin
 end
 
 Base.:(==)(a::LiteralNode, b::LiteralNode) = a.location == b.location && a.value == b.value
+
+Base.:(==)(a::IdentifierNode, b::IdentifierNode) = begin
+	a.location == b.location && a.value == b.value
+end
+
+Base.:(==)(a::IfNode, b::IfNode) = begin
+	a.location == b.location && a.if_body == b.if_body && a.condition == b.condition && a.else_body == b.else_body
+end

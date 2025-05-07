@@ -146,7 +146,6 @@ function parse_if_expression(lexer::Lexer, start::Location)::IfNode
 
     cond = parse_expression(lexer)
     then_branch = parse_expression(lexer)
-    println("hello")
 
     else_branch = EmptyNode(start)
 

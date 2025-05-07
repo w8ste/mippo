@@ -15,6 +15,14 @@ function test_lexer(input::String, expected_token_kinds::Vector{TokenKind})
     @test token.token_kind == EOF
 end
 
+function test_parser(input::String, expected_nodes::IfNode)
+    lexer = init_lexer(input, "<test>", 1, 1, 1)
+
+    nodes = start_parse(lexer)
+
+    @test expected_nodes == nodes[1]
+end
+
 function test_parser(input::String, expected_nodes::Vector{ExprNode})
     lexer = init_lexer(input, "<test>", 1, 1, 1)
 
@@ -63,6 +71,16 @@ end
 	    nodes::Vector{ExprNode} = [ListNode([LiteralNode(1.0, loc), LiteralNode(2.0, loc2)], Location("<test>", 1, 1))]
 
         test_parser("[1 2]", nodes)
+    end
+
+    @testset "IF" begin
+        loc = Location("<test>", 1, 5)
+        loc2 = Location("<test>", 1, 7)
+	    loc3 = Location("<test>", 1, 9)
+
+        nodes::Vector{ExprNode} = [IdentifierNode("a", loc), IdentifierNode("b", loc2), IdentifierNode("c", loc3)]
+
+        test_parser("(if a b c)", IfNode(nodes[1],nodes[2], nodes[3], Location("<test>", 1, 1)))
     end
 end
 
